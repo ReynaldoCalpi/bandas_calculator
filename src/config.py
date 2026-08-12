@@ -28,16 +28,18 @@ OFFICIAL_SOURCES = {
     }
 }
 
-# Parámetros de Impuestos por País (Tasa IVA y Montos Fijos en Moneda Local)
+# Parámetros de Impuestos por País
+# SV: IVA 13% ($), Impuestos fijos: FOVIAL $0.20 + COTRANS $0.10
+# GT: IVA 12% (Q), Impuesto fijo: IDP Q1.30
 TAX_PARAMS = {
-    'SV': {'iva_rate': 0.13, 'fijos': [0.20, 0.10]},       # FOVIAL $0.20, COTRANS $0.10
-    'GT': {'iva_rate': 0.12, 'fijos': [1.30]},              # IDP Q1.30
+    'SV': {'iva_rate': 0.13, 'fijos': [0.20, 0.10]},
+    'GT': {'iva_rate': 0.12, 'fijos': [1.30]},
     'CR': {'iva_rate': 0.00, 'fijos': []},
     'HN': {'iva_rate': 0.00, 'fijos': []},
     'NI': {'iva_rate': 0.00, 'fijos': []}
 }
 
-# Estructura de las 15 Bandas (Factor en USD)
+# Las 15 Bandas Oficiales Calpi
 BANDS_REFERENCE = {
     1: (2.11, 2.36), 2: (2.37, 2.62), 3: (2.63, 2.88), 4: (2.89, 3.14),
     5: (3.15, 3.40), 6: (3.41, 3.66), 7: (3.67, 3.92), 8: (3.93, 4.18),
