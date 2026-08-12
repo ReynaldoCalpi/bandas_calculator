@@ -90,9 +90,25 @@ if st.button("🚀 Ejecutar Validación y Cruce de Bandas", type="primary"):
             "Estado": "MATCH" if abs(diferencia) <= 0.01 else "REVISIÓN REQUERIDA"
         })
 
+    # Generar el DataFrame de resultados
     df_resultados = pd.DataFrame(resultados)
     
+    # Función para aplicar estilos condicionales en las columnas de bandas y estado
+    def estilizar_resultados(row):
+        # Comparamos si la Banda Calpi Validada es exactamente igual a la Banda Autorizada CMI
+        if row["Banda Calpi Validada"] == row["Banda Autorizada CMI"]:
+            # Color verde claro para éxito / match
+            return ['background-color: #d4edda; color: #155724'] * len(row)
+        else:
+            # Color rojo claro para alerta / revisión requerida
+            return ['background-color: #f8d7da; color: #721c24'] * len(row)
+
+    # Aplicar el estilo a todo el DataFrame basado en la comparación de bandas
+    df_estilizado = df_resultados.style.apply(estilizar_resultados, axis=1)
+
     st.markdown("### 📋 Cuadro Resumen de Validación y Asignación de Bandas")
-    st.dataframe(df_resultados, use_container_width=True)
+    
+    # Mostrar el dataframe con formato visual interactivo
+    st.dataframe(df_estilizado, use_container_width=True)
     
     st.success("Proceso de validación completado con éxito.")
