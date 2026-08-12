@@ -18,10 +18,8 @@ st.markdown("---")
 st.markdown("### 🌐 1. Enlaces a Fuentes Oficiales de Consulta")
 st.markdown("Utiliza estos accesos directos institucionales para verificar los precios diarios y tasas de cambio antes de ingresarlos:")
 
-# Mostrar accesos directos limpios en columnas o tarjetas
 cols_fuentes = st.columns(5)
 paises = ['SV', 'GT', 'HN', 'NI', 'CR']
-monedas = {'SV': '$', 'GT': 'Q', 'HN': 'L', 'NI': 'C$', 'CR': '₡'}
 
 for i, p in enumerate(paises):
     with cols_fuentes[i]:
@@ -34,27 +32,28 @@ st.markdown("---")
 col_izq, col_der = st.columns(2)
 
 with col_izq:
-    st.markdown("### 📊 2. Registro de Promedios y Tasas (Tras Revisión)")
-    st.info("Ingresa los promedios calculados tras consultar las fuentes oficiales y sus respectivas tasas de cambio.")
+    st.markdown("### 📊 2. Registro de Precios Brutos y Tasas ($$$)")
+    st.info("Ingresa los precios brutos promedio expresados en Dólares ($$$) tras consultar las fuentes oficiales.")
     
     precios_brutos = {}
     tasas_cambio = {}
     default_tasas = {'SV': 1.0, 'GT': 7.62, 'HN': 26.72, 'NI': 36.62, 'CR': 454.50}
+    default_precios_usd = {'SV': 4.52, 'GT': 4.76, 'HN': 4.52, 'NI': 4.47, 'CR': 5.09}
     
     for p in paises:
         c1, c2 = st.columns(2)
         with c1:
-            precios_brutos[p] = st.number_input(f"Promedio {p} ({monedas[p]})", value=0.0, format="%.2f", key=f"p_{p}")
+            precios_brutos[p] = st.number_input(f"Bruto {p} ($)", value=default_precios_usd[p], format="%.2f", key=f"p_{p}")
         with c2:
             tasas_cambio[p] = st.number_input(f"Tasa {p}", value=default_tasas[p], format="%.4f", key=f"t_{p}")
 
 with col_der:
-    st.markdown("### 📥 3. Datos Compartidos por CMI")
+    st.markdown("### 📥 3. Datos Compartidos por CMI ($$$)")
     st.info("Ingresa los valores en USD recibidos por correo de CMI para realizar el contraste.")
     
     cmi_valores = {}
     for p in paises:
-        cmi_valores[p] = st.number_input(f"Valor CMI {p} (USD)", value=4.00, format="%.2f", key=f"cmi_{p}")
+        cmi_valores[p] = st.number_input(f"Valor CMI {p} ($)", value=4.00, format="%.2f", key=f"cmi_{p}")
 
 st.markdown("---")
 if st.button("🚀 Ejecutar Validación y Cruce de Bandas", type="primary"):
@@ -64,7 +63,7 @@ if st.button("🚀 Ejecutar Validación y Cruce de Bandas", type="primary"):
         p_bruto = precios_brutos[p]
         t_cambio = tasas_cambio[p]
         
-        # Normalización Calpi (Resta de impuestos + Conversión USD)
+        # Normalización Calpi (Resta de impuestos convertidos a USD + Precio en USD)
         precio_norm = calcular_precio_normalizado(p_bruto, p, t_cambio)
         id_banda_calpi, desc_banda_calpi = obtener_banda(precio_norm)
         
@@ -77,7 +76,7 @@ if st.button("🚀 Ejecutar Validación y Cruce de Bandas", type="primary"):
 
         resultados.append({
             "País": p,
-            "Bruto Local": p_bruto,
+            "Bruto Local ($)": p_bruto,
             "Tasa Cambio": t_cambio,
             "Calculado Calpi (USD)": precio_norm,
             "Valor CMI (USD)": cmi_val,
