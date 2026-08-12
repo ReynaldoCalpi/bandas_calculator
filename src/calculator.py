@@ -1,29 +1,35 @@
 # src/calculator.py
-from src.config import TAX_DEDUCTIONS, BANDS_REFERENCE
+from src.config import TAX_PARAMS, BANDS_REFERENCE
 
 def calcular_precio_normalizado(precio_bruto_usd, pais, tasa_cambio):
     """
-    1. Recibe el precio bruto en USD.
-    2. Convierte las deducciones de impuestos locales a USD dividiéndolas por la tasa de cambio.
-    3. Resta los impuestos para obtener el precio neto en USD.
+    1. Convierte el precio bruto USD a moneda local.
+    2. Resta impuestos fijos, divide entre (1 + tasa_iva) y vuelve a sumar los impuestos fijos.
+    3. Convierte el resultado neto final a USD para evaluar la banda.
     """
     if tasa_cambio <= 0:
         return 0.0
     
-    # Sumar deducciones de impuestos en moneda local
-    deducciones_locales = sum(TAX_DEDUCTIONS.get(pais, {}).values())
+    # Llevar a moneda local
+    precio_local = precio_bruto_usd * tasa_cambio
     
-    # Convertir las deducciones locales a USD
-    deducciones_usd = deducciones_locales / tasa_cambio
+    # Obtener parámetros del país
+    params = TAX_PARAMS.get(pais, {'iva_rate': 0.0, 'fijos': []})
+    iva = params['iva_rate']
+    total_fijos_local = sum(params['fijos'])
     
-    # Restar para obtener el precio neto en USD
-    precio_neto_usd = precio_bruto_usd - deducciones_usd
-    return round(precio_neto_usd, 2)
+    # Aplicar la fórmula exacta mostrada en el ejemplo:
+    # ((Bruto - Fijos) / (1 + IVA)) + Fijos
+    if iva > 0:
+        neto_local = ((precio_local - total_fijos_local) / (1 + iva)) + total_fijos_local
+    else:
+        neto_local = precio_local - total_fijos_local
+        
+    # Convertir a USD final
+    neto_usd = neto_local / tasa_cambio
+    return round(neto_usd, 2)
 
 def obtener_banda(precio_usd):
-    """
-    Busca a qué ID de banda y rango pertenece el precio USD calculado.
-    """
     for id_banda, (min_val, max_val) in BANDS_REFERENCE.items():
         if min_val <= precio_usd <= max_val:
             return id_banda, f"De ${min_val:.2f} hasta ${max_val:.2f}"
