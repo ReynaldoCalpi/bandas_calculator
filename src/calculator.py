@@ -1,18 +1,24 @@
 # src/calculator.py
 from src.config import TAX_DEDUCTIONS, BANDS_REFERENCE
 
-def calcular_precio_normalizado(precio_promedio_local, pais, tasa_cambio):
+def calcular_precio_normalizado(precio_bruto_usd, pais, tasa_cambio):
     """
-    1. Resta los impuestos fijos locales.
-    2. Convierte el resultado a USD usando la tasa de cambio oficial.
+    1. Recibe el precio bruto en USD.
+    2. Convierte las deducciones de impuestos locales a USD dividiéndolas por la tasa de cambio.
+    3. Resta los impuestos para obtener el precio neto en USD.
     """
     if tasa_cambio <= 0:
         return 0.0
     
-    deducciones = sum(TAX_DEDUCTIONS.get(pais, {}).values())
-    precio_neto_local = precio_promedio_local - deducciones
-    precio_usd = precio_neto_local / tasa_cambio
-    return round(precio_usd, 2)
+    # Sumar deducciones de impuestos en moneda local
+    deducciones_locales = sum(TAX_DEDUCTIONS.get(pais, {}).values())
+    
+    # Convertir las deducciones locales a USD
+    deducciones_usd = deducciones_locales / tasa_cambio
+    
+    # Restar para obtener el precio neto en USD
+    precio_neto_usd = precio_bruto_usd - deducciones_usd
+    return round(precio_neto_usd, 2)
 
 def obtener_banda(precio_usd):
     """
