@@ -1,6 +1,5 @@
 # src/config.py
 
-# Enlaces oficiales extraídos de tus fuentes de consulta
 OFFICIAL_SOURCES = {
     'GT': {
         'nombre': 'Guatemala (MEM / Banguat)',
@@ -29,13 +28,13 @@ OFFICIAL_SOURCES = {
     }
 }
 
-# Impuestos fijos por galón en MONEDA LOCAL a deducir antes de convertir a USD
-TAX_DEDUCTIONS = {
-    'SV': {'FOVIAL': 0.20, 'COTRANS': 0.10, 'FEFE': 0.16, 'IEC': 0.00},
-    'GT': {'IVA': 1.12, 'IDP': 1.30},
-    'HN': {'IMPUESTOS': 0.00},
-    'NI': {'IMPUESTOS': 0.00},
-    'CR': {'IVA_ESTIMADO': 1.66}
+# Parámetros de Impuestos por País (Tasa IVA y Montos Fijos en Moneda Local)
+TAX_PARAMS = {
+    'SV': {'iva_rate': 0.13, 'fijos': [0.20, 0.10]},       # FOVIAL $0.20, COTRANS $0.10
+    'GT': {'iva_rate': 0.12, 'fijos': [1.30]},              # IDP Q1.30
+    'CR': {'iva_rate': 0.00, 'fijos': []},
+    'HN': {'iva_rate': 0.00, 'fijos': []},
+    'NI': {'iva_rate': 0.00, 'fijos': []}
 }
 
 # Estructura de las 15 Bandas (Factor en USD)
